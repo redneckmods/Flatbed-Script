@@ -10,3 +10,8 @@ Hello, this script is made for Redneck's recent Flatbed trucks that he recently 
 
 # Requirements
 Make sure you have the tow trucks from www.redneckmods.com (You can use this for other tow trucks, but you will need to configure it for those.)
+
+# Contributors
+
+`@IceTheDev`
+`@Nick-VD`
