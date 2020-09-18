@@ -1,5 +1,4 @@
 # Flatbed-Script
-
 Hello, this script is made for Redneck's recent Flatbed trucks that he recently released on www.redneckmods.com
 
 # Installation
@@ -11,7 +10,13 @@ Hello, this script is made for Redneck's recent Flatbed trucks that he recently 
 # Requirements
 Make sure you have the tow trucks from www.redneckmods.com (You can use this for other tow trucks, but you will need to configure it for those.)
 
-# Contributors
+# Known Bugs
+- vehicle may go flying (just a little bit) after detaching off the bed.
 
+# Planned Features
+- Fully-Functional Winch System.
+- Attaching/Detaching the Vehicle from outside.
+
+# Contributors
 `@IceTheDev`
 `@Nick-VD`
