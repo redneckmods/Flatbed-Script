@@ -35,5 +35,5 @@ authors 'Nick-VD & IceTheDev'
 version '1.0'
 
 shared_script 'config.lua'
-client_script 'client-flatbed.lua'
-server_script 'server-flatbed.lua'
+client_script 'client/client-flatbed.lua'
+server_script 'server/server-flatbed.lua'
