@@ -117,14 +117,12 @@ Citizen.CreateThread(function()
                 if IsControlJustReleased(0, config.carAttach) then
                     if vehicleHandle ~= nil and GetEntityModel(vehicleHandle) == GetHashKey(config.flatbed_name[1]) or GetEntityModel(vehicleHandle) == GetHashKey(config.flatbed_name[2]) then
                         local boneIndex = GetEntityBoneIndexByName(vehicleHandle, "misc_z")
-                        local attachmentOffset = {vector3(0.0, 0.0, 0.3), vector3(0.0, 0.0, 0.0)}
-                        local bedPos = GetEntityCoords(vehicleHandle, false)
-                        local carPos = GetEntityCoords(lastVeh, false)
-                        NetworkRequestControlOfEntity(lastVeh)
-                        while not NetworkHasControlOfEntity(lastVeh) do 
-                            Wait(0) 
-                        end
-                        AttachEntityToEntity(lastVeh, vehicleHandle, boneIndex, attachmentOffset[1] + vector3(0.0, 0.0, carPos.z - bedPos.z - 0.3), 0.0, 0.0, 0.0, false, true, true, false, 20, true)
+                        local towOffset = GetOffsetFromEntityInWorldCoords(vehicleHandle, 0.0, -2.2, 0.4)
+                        local towRot = GetEntityRotation(vehicleHandle, 1)
+                        local vehicleHeightMin, vehicleHeightMax = GetModelDimensions(GetEntityModel(lastVeh))
+                        --print(vehicleHeightMin, vehicleHeightMax)
+                        AttachEntityToEntity(lastVeh, vehicleHandle, boneIndex, 0, 0.0, 0.0 - vehicleHeightMin.z, 0, 0, 0, 1, 1, 1, 1, 0, 1)
+
                         attached = true
                         TriggerServerEvent('saveAttachment', vehicleHandle, attached)
                     end
