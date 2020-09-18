@@ -83,6 +83,12 @@ Citizen.CreateThread(function()
             lastVeh = veh
         end
 
+        if extended == true then
+            FreezeEntityPosition(lastTruck, true)
+        else
+            FreezeEntityPosition(lastTruck, false)
+        end
+
         if IsPedInAnyVehicle(ped, false) then
             if IsEntityAttached(veh) then
                 if IsControlJustReleased(0, config.carAttach) then
