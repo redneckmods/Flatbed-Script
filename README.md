@@ -1,6 +1,6 @@
 # Flatbed-Script
 
-Hello, this script is made for Redneck's recent Flatbed trucks that he recently released on https://www.redneckmods.com
+Hello, this script is made for Redneck's recent Flatbed trucks that he recently released on www.redneckmods.com
 
 # Installation
 1) Download the recent version from the releases.
