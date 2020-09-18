@@ -26,7 +26,11 @@ Citizen.CreateThread(function()
         if IsPedInAnyVehicle(ped,true) == false then
             markerCoords = GetOffsetFromEntityInWorldCoords(lastTruck, -1.2, -4.75, 0.0)
             if GetDistanceBetweenCoords(pos,markerCoords) < 5 then
-                DrawText3D(markerCoords.x, markerCoords.y, markerCoords.z, config.controlText)
+                if not extended == true then
+                    DrawText3D(markerCoords.x, markerCoords.y, markerCoords.z, config.controlText)
+                else
+                    DrawText3D(markerCoords.x, markerCoords.y, markerCoords.z, config.controlText2)
+                end
                 if GetDistanceBetweenCoords(markerCoords,pos) < 2 then
                     if IsControlJustPressed(0,111) or IsControlJustPressed(0,112) then
                         if trucks[lastTruck] ~= nil and trucks[lastTruck]['bedslide2'] ~= nil then
