@@ -32,7 +32,6 @@ game 'gta5'
 
 description 'Redneck Modifications | Flatbed Script'
 authors 'Nick-VD & IceTheDev'
-version '1.0'
 
 shared_script 'config.lua'
 client_script 'client/client-flatbed.lua'
