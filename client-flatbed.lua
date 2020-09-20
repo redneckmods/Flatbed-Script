@@ -79,14 +79,6 @@ Citizen.CreateThread(function()
         local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, lastVeh, -1)
         local a, b, c, d, vehicleHandle = GetRaycastResult(rayHandle)
 
-        if veh and GetEntityModel(veh) == GetHashKey(config.flatbed_name[1]) or GetEntityModel(veh) == GetHashKey(config.flatbed_name[2]) then
-           lastTruck = veh
-           
-           lastTruckCoords = GetEntityCoords(lastTruck)
-        else
-            lastVeh = veh
-        end
-
         if extended == true then
             FreezeEntityPosition(lastTruck, true)
         else
@@ -121,7 +113,7 @@ Citizen.CreateThread(function()
                         local towRot = GetEntityRotation(vehicleHandle, 1)
                         local vehicleHeightMin, vehicleHeightMax = GetModelDimensions(GetEntityModel(lastVeh))
                         --print(vehicleHeightMin, vehicleHeightMax)
-                        AttachEntityToEntity(lastVeh, vehicleHandle, boneIndex, 0, 0.0, 0.0 - vehicleHeightMin.z, 0, 0, 0, 1, 1, 1, 1, 0, 1)
+                        AttachEntityToEntity(lastVeh, vehicleHandle, boneIndex, 0, 0.0, 0.05 - vehicleHeightMin.z, 0, 0, 0, 1, 1, 1, 1, 0, 1)
 
                         attached = true
                         TriggerServerEvent('saveAttachment', vehicleHandle, attached)
