@@ -31,10 +31,22 @@ Citizen.CreateThread(function()
         if IsPedInAnyVehicle(ped,true) == false then
             markerCoords = GetOffsetFromEntityInWorldCoords(lastTruck, -1.2, -4.75, 0.0)
             if GetDistanceBetweenCoords(pos,markerCoords) < 5 then
-                if not extended == true then
-                    DrawText3D(markerCoords.x, markerCoords.y, markerCoords.z, config.controlText)
+                if config.FloatingText == true then
+                    if not extended == true then
+                        DrawText3D(markerCoords.x, markerCoords.y, markerCoords.z, config.controlText)
+                    else
+                        DrawText3D(markerCoords.x, markerCoords.y, markerCoords.z, config.controlText2)
+                    end
                 else
-                    DrawText3D(markerCoords.x, markerCoords.y, markerCoords.z, config.controlText2)
+                    if not extended == true then
+                        Citizen.InvokeNative(0x8509B634FBE7DA11, "STRING")
+                        Citizen.InvokeNative(0x5F68520888E69014, config.labelText)
+                        Citizen.InvokeNative(0x238FFE5C7B0498A6, 0, false, true, -1)
+                    else
+                        Citizen.InvokeNative(0x8509B634FBE7DA11, "STRING")
+                        Citizen.InvokeNative(0x5F68520888E69014, config.labelText2)
+                        Citizen.InvokeNative(0x238FFE5C7B0498A6, 0, false, true, -1)
+                    end
                 end
                 if GetDistanceBetweenCoords(markerCoords,pos) < 2 then
                     if IsControlJustPressed(0,111) or IsControlJustPressed(0,112) then
@@ -117,7 +129,6 @@ Citizen.CreateThread(function()
                         local towOffset = GetOffsetFromEntityInWorldCoords(vehicleHandle, 0.0, -2.2, 0.4)
                         local towRot = GetEntityRotation(vehicleHandle, 1)
                         local vehicleHeightMin, vehicleHeightMax = GetModelDimensions(GetEntityModel(lastVeh))
-                        --print(vehicleHeightMin, vehicleHeightMax)
                         AttachEntityToEntity(lastVeh, vehicleHandle, boneIndex, 0, 0.0, 0.05 - vehicleHeightMin.z, 0, 0, 0, 1, 1, 1, 1, 0, 1)
 
                         attached = true
