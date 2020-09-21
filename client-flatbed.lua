@@ -9,13 +9,18 @@ local extended = false
 local attached = false
 local trucks = {}
 
+local vehs = {}
+for k,v in ipairs(config.flatbed_name) do
+    table.insert(vehs, GetHashKey(v))
+end
+
 Citizen.CreateThread(function()
     while true do
         local ped = GetPlayerPed(-1)
         local veh = GetVehiclePedIsIn(ped, true)
         local pos = GetEntityCoords(ped)
 
-        if veh and GetEntityModel(veh) == GetHashKey(config.flatbed_name[1]) or GetEntityModel(veh) == GetHashKey(config.flatbed_name[2]) then
+        if veh and has_value(vehs, GetEntityModel(veh)) then
            lastTruck = veh
            
            lastTruckCoords = GetEntityCoords(lastTruck)
@@ -48,7 +53,7 @@ Citizen.CreateThread(function()
                     end
                 end
             end         
-        elseif GetEntityModel(veh) == GetHashKey(config.flatbed_name[1]) or GetEntityModel(veh) == GetHashKey(config.flatbed_name[2]) then
+        elseif has_value(vehs, GetEntityModel(veh)) then
             if IsControlJustPressed(0,111) or IsControlJustPressed(0,112) or IsControlJustPressed(0,21) or IsControlJustPressed(0,36) then
                 if trucks[lastTruck] ~= nil and trucks[lastTruck]['bedslide'] ~= nil then
                     start = trucks[lastTruck]['bedslide']
@@ -101,13 +106,13 @@ Citizen.CreateThread(function()
                 Citizen.InvokeNative(0x5F68520888E69014, config.carDetachLabel)
                 Citizen.InvokeNative(0x238FFE5C7B0498A6, 0, false, true, -1)
             else
-                if vehicleHandle ~= nil and GetEntityModel(vehicleHandle) == GetHashKey(config.flatbed_name[1]) or GetEntityModel(vehicleHandle) == GetHashKey(config.flatbed_name[2]) then
+                if vehicleHandle ~= nil and has_value(vehs, GetEntityModel(vehicleHandle)) then
                     Citizen.InvokeNative(0x8509B634FBE7DA11, "STRING")
                     Citizen.InvokeNative(0x5F68520888E69014, config.carAttachLabel)
                     Citizen.InvokeNative(0x238FFE5C7B0498A6, 0, false, true, -1)
                 end
                 if IsControlJustReleased(0, config.carAttach) then
-                    if vehicleHandle ~= nil and GetEntityModel(vehicleHandle) == GetHashKey(config.flatbed_name[1]) or GetEntityModel(vehicleHandle) == GetHashKey(config.flatbed_name[2]) then
+                    if vehicleHandle ~= nil and has_value(vehs, GetEntityModel(vehicleHandle)) then
                         local boneIndex = GetEntityBoneIndexByName(vehicleHandle, "misc_z")
                         local towOffset = GetOffsetFromEntityInWorldCoords(vehicleHandle, 0.0, -2.2, 0.4)
                         local towRot = GetEntityRotation(vehicleHandle, 1)
@@ -201,3 +206,13 @@ RegisterNetEvent('saveTrucks')
 AddEventHandler('saveTrucks', function(data)
     trucks = data
 end)
+
+function has_value(tab, val)
+    for index, value in ipairs(tab) do
+        if value == val then
+            return true
+        end
+    end
+
+    return false
+end
