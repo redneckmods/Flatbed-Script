@@ -3,7 +3,9 @@ config = {
         "f550rb",
         "f550rbc",
         "16ramrb",
-        "16ramrbc"
+        "16ramrbc",
+        "20ramrb",
+        "20ramrbc"
     }, -- If you changed the name from f550rb to something else, change that here!
     carAttach = 305, -- Default: B // If you would like to change this, here are the controls list https://docs.fivem.net/docs/game-references/controls/
     controlText = "[~y~5~w~] raise bed ~r~-~w~ [~y~8~w~] lower bed", -- This text displays next to the "control" panel near the back left of the bed.
