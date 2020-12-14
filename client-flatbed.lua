@@ -22,13 +22,12 @@ Citizen.CreateThread(function()
 
         if veh and has_value(vehs, GetEntityModel(veh)) then
            lastTruck = veh
-           
            lastTruckCoords = GetEntityCoords(lastTruck)
         else
             lastVeh = veh
         end
 
-        if IsPedInAnyVehicle(ped,true) == false then
+        if IsPedInAnyVehicle(ped, true) == false and lastTruck ~= 0 then
             markerCoords = GetOffsetFromEntityInWorldCoords(lastTruck, -1.2, -4.75, 0.0)
             if GetDistanceBetweenCoords(pos,markerCoords) < 5 then
                 if config.FloatingText == true then
@@ -65,7 +64,7 @@ Citizen.CreateThread(function()
                     end
                 end
             end         
-        elseif has_value(vehs, GetEntityModel(veh)) then
+        elseif has_value(vehs, GetEntityModel(veh)) and lastTruck ~= 0 then
             if IsControlJustPressed(0,111) or IsControlJustPressed(0,112) or IsControlJustPressed(0,21) or IsControlJustPressed(0,36) then
                 if trucks[lastTruck] ~= nil and trucks[lastTruck]['bedslide'] ~= nil then
                     start = trucks[lastTruck]['bedslide']
