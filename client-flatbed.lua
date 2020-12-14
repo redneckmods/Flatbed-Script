@@ -113,14 +113,14 @@ Citizen.CreateThread(function()
                         TriggerServerEvent('saveAttachment',lastTruck,attached)
                     end
                 end
-                Citizen.InvokeNative(0x8509B634FBE7DA11, "STRING")
-                Citizen.InvokeNative(0x5F68520888E69014, config.carDetachLabel)
-                Citizen.InvokeNative(0x238FFE5C7B0498A6, 0, false, true, -1)
+                BeginTextCommandDisplayHelp("STRING")
+                AddTextComponentSubstringKeyboardDisplay(config.carDetachLabel)
+                EndTextCommandDisplayHelp(0, false, true, -1)
             else
                 if vehicleHandle ~= nil and has_value(vehs, GetEntityModel(vehicleHandle)) then
-                    Citizen.InvokeNative(0x8509B634FBE7DA11, "STRING")
-                    Citizen.InvokeNative(0x5F68520888E69014, config.carAttachLabel)
-                    Citizen.InvokeNative(0x238FFE5C7B0498A6, 0, false, true, -1)
+                    BeginTextCommandDisplayHelp("STRING")
+                    AddTextComponentSubstringKeyboardDisplay(config.carAttachLabel)
+                    EndTextCommandDisplayHelp(0, false, true, -1)
                 end
                 if IsControlJustReleased(0, config.carAttach) then
                     if vehicleHandle ~= nil and has_value(vehs, GetEntityModel(vehicleHandle)) then
