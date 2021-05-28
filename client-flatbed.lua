@@ -128,7 +128,7 @@ Citizen.CreateThread(function()
                         local towOffset = GetOffsetFromEntityInWorldCoords(vehicleHandle, 0.0, -2.2, 0.4)
                         local towRot = GetEntityRotation(vehicleHandle, 1)
                         local vehicleHeightMin, vehicleHeightMax = GetModelDimensions(GetEntityModel(lastVeh))
-                        AttachEntityToEntity(lastVeh, vehicleHandle, boneIndex, 0, 0.0, 0.05 - vehicleHeightMin.z, 0, 0, 0, 1, 1, 1, 1, 0, 1)
+                        AttachEntityToEntity(lastVeh, vehicleHandle, boneIndex, 0, 0.0, 0.08 - vehicleHeightMin.z, 2.0, 0, 0, 1, 1, 1, 1, 0, 1)
 
                         attached = true
                         TriggerServerEvent('saveAttachment', vehicleHandle, attached)
