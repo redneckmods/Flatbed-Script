@@ -1,6 +1,5 @@
 local lastTruck = 0
 local lastVeh = 0
-local ropeCoords = vector3(0,0,0)
 
 local lastTruckCoords = vector3(0,0,0)
 local r,g,b = 255,0,0
@@ -8,6 +7,14 @@ local start = 0.1
 local extended = false
 local attached = false
 local trucks = {}
+
+local vehicle = nil
+local rope_saver = {}
+local carryingRope = nil
+local attachedVehicle = nil
+local ropeCoords = nil
+
+
 
 local vehs = {}
 for k,v in ipairs(config.flatbed_name) do
@@ -21,20 +28,29 @@ Citizen.CreateThread(function()
         local pos = GetEntityCoords(ped)
 
         if veh and has_value(vehs, GetEntityModel(veh)) then
-           lastTruck = veh
-           lastTruckCoords = GetEntityCoords(lastTruck)
+            lastTruck = veh
+            lastTruckCoords = GetEntityCoords(lastTruck)
         else
             lastVeh = veh
         end
 
         if IsPedInAnyVehicle(ped, true) == false and lastTruck ~= 0 then
             markerCoords = GetOffsetFromEntityInWorldCoords(lastTruck, -1.2, -4.75, 0.0)
+            if IsControlJustReleased(0, 109) then 
+                if carryingRope then
+                    startRope2()
+                end
+            end
             if GetDistanceBetweenCoords(pos,markerCoords) < 5 then
                 if config.FloatingText == true then
                     if not extended == true then
                         DrawText3D(markerCoords.x, markerCoords.y, markerCoords.z, config.controlText)
                     else
-                        DrawText3D(markerCoords.x, markerCoords.y, markerCoords.z, config.controlText2)
+                        if not carryingRope then
+                            DrawText3D(markerCoords.x, markerCoords.y, markerCoords.z, config.controlText2)
+                        else
+                            DrawText3D(markerCoords.x, markerCoords.y, markerCoords.z, config.controlText3)
+                        end
                     end
                 else
                     if not extended == true then
@@ -43,10 +59,17 @@ Citizen.CreateThread(function()
                         Citizen.InvokeNative(0x238FFE5C7B0498A6, 0, false, true, -1)
                     else
                         Citizen.InvokeNative(0x8509B634FBE7DA11, "STRING")
-                        Citizen.InvokeNative(0x5F68520888E69014, config.labelText2)
+                        if not carryingRope then
+                            Citizen.InvokeNative(0x5F68520888E69014, config.labelText2)
+                        else
+                            Citizen.InvokeNative(0x5F68520888E69014, config.labelText3)
+                        end
                         Citizen.InvokeNative(0x238FFE5C7B0498A6, 0, false, true, -1)
+
+
                     end
                 end
+
                 if GetDistanceBetweenCoords(markerCoords,pos) < 2 then
                     if IsControlJustPressed(0,111) or IsControlJustPressed(0,112) then
                         if trucks[lastTruck] ~= nil and trucks[lastTruck]['bedslide2'] ~= nil then
@@ -56,6 +79,10 @@ Citizen.CreateThread(function()
                     if IsControlPressed(0, 111) then 
                         bedslide2('extend')
                     end
+                    if IsControlJustReleased(0, 108) then 
+                        startRope()
+                    end
+
                     if IsControlJustReleased(0,111) or IsControlJustReleased(0,112) then
                         TriggerServerEvent('saveArmPosition',lastTruck,start)
                     end
@@ -226,3 +253,72 @@ function has_value(tab, val)
 
     return false
 end
+
+function startRope()
+    local lastVehicle = lastTruck
+    if lastVehicle ~= -1 then
+        attachedVehicle = NetworkGetNetworkIdFromEntity(lastVehicle)
+        if not carryingRope then
+            attachedVehicle = NetworkGetNetworkIdFromEntity(lastVehicle)
+            TriggerServerEvent('doTheRop',NetworkGetNetworkIdFromEntity(lastVehicle),NetworkGetNetworkIdFromEntity(PlayerPedId()))
+            SetTextComponentFormat("STRING")
+            AddTextComponentString(config.ropeText)
+            DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+            carryingRope = true 
+        else
+            TriggerServerEvent('doTheRopR',attachedVehicle)
+            carryingRope = nil
+        end
+    end
+end
+RegisterNetEvent('ropeToClientDataR')
+AddEventHandler('ropeToClientDataR',function(entotyVeh)
+    DeleteRope(rope_saver[entotyVeh])
+end)
+
+
+RegisterNetEvent('ropeToClientData')
+AddEventHandler('ropeToClientData',function(player,entityVeh,playerCoords,vehCoords,ropeDefs)
+    rope_saver[entityVeh]  = {}
+    local playerPed = NetworkGetEntityFromNetworkId(player)
+    local vehicle = NetworkGetEntityFromNetworkId(entityVeh)
+    local pCoords = playerCoords
+    local vCoords = vehCoords
+    RopeLoadTextures()
+    local rope = AddRope(pCoords, 0.0, 0.0, 0.0, 30.0, 2, 25.0, 1.0, 0, 0, 0, 0, 0, 0, 0)
+    rope_saver[entityVeh] = rope
+    local boneIndex = GetEntityBoneIndexByName(vehicle, "misc_z")
+    ropeCoords = GetWorldPositionOfEntityBone(vehicle,boneIndex)
+    AttachRopeToEntity(rope, vehicle, ropeCoords, 1)
+    AttachEntitiesToRope(rope,vehicle,playerPed,ropeCoords,pCoords,100)
+end)
+
+function startRope2()
+    local playerCoords = GetEntityCoords(PlayerPedId())
+    local closestVeh = GetClosestVehicle(playerCoords, 10.001, 0, 70)
+    TriggerServerEvent('doTheRopFinal',NetworkGetNetworkIdFromEntity(closestVeh),attachedVehicle,ropeCoords)
+end
+RegisterNetEvent('ropeToClientDataFinal')
+AddEventHandler('ropeToClientDataFinal',function(closestVeh,attachedVehicle,ropeCoords)
+    local closestVeh = NetworkGetEntityFromNetworkId(closestVeh)
+    local boneIndex = GetEntityBoneIndexByName(NetworkGetEntityFromNetworkId(attachedVehicle), "misc_z")
+
+    if rope_saver[attachedVehicle] then
+        AttachEntitiesToRope(rope_saver[attachedVehicle],NetworkGetEntityFromNetworkId(attachedVehicle),closestVeh,ropeCoords,GetWorldPositionOfEntityBone(closestVeh,GetEntityBoneIndexByName(closestVeh,"bonnet"),100))
+        DetachRopeFromEntity(rope_saver[attachedVehicle],PlayerPedId())
+        StartRopeWinding(rope_saver[attachedVehicle])
+        FreezeEntityPosition(NetworkGetEntityFromNetworkId(attachedVehicle),true)
+        while RopeGetDistanceBetweenEnds( rope_saver[attachedVehicle]) >= 1.05 do
+            RopeForceLength(rope_saver[attachedVehicle],RopeGetDistanceBetweenEnds( rope_saver[attachedVehicle])-0.1)
+            Citizen.Wait(50)
+        end
+        local vehicleHeightMin, vehicleHeightMax = GetModelDimensions(GetEntityModel(closestVeh))
+        FreezeEntityPosition(NetworkGetEntityFromNetworkId(attachedVehicle),false)
+        AttachEntityToEntity(closestVeh, NetworkGetEntityFromNetworkId(attachedVehicle), boneIndex, 0, 0.0, 0.08 - vehicleHeightMin.z, 2.0, 0, 0, 1, 1, 1, 1, 0, 1)
+        DeleteRope( rope_saver[attachedVehicle])
+        rope_saver[attachedVehicle] = nil
+        carryingRope = nil
+        attached = true
+        TriggerServerEvent('saveAttachment', NetworkGetEntityFromNetworkId(attachedVehicle), attached)
+    end
+end)
