@@ -18,5 +18,6 @@ config = {
     labelText = "[~y~5~w~] raise bed ~r~-~w~ [~y~8~w~] lower bed", -- This text displays on a label. (only if FloatingText is true)
     labelText2 = "[~y~5~w~] raise bed ~r~-~w~ [~y~4~w~] take Winch Cable ~n~~w~[~g~Safe to Attach/Detach~w~]", -- This text displays on a label. (only if FloatingText is true)
     labelText3 = "[~y~5~w~] raise bed ~r~-~w~ [~y~4~w~] remove Winch Cable ~n~~w~[~g~Safe to Attach/Detach~w~]", -- This text displays on a label. (only if FloatingText is true)
-    ropeText = "[~y~6~w~] attach winch to closest Vehicle" 
+    ropeText = "[~y~6~w~] attach winch to closest Vehicle",
+    noVeh = "Cannot find a vehicle to attach the cable too."
 }

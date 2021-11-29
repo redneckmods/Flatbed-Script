@@ -296,7 +296,16 @@ end)
 function startRope2()
     local playerCoords = GetEntityCoords(PlayerPedId())
     local closestVeh = GetClosestVehicle(playerCoords, 10.001, 0, 70)
-    TriggerServerEvent('doTheRopFinal',NetworkGetNetworkIdFromEntity(closestVeh),attachedVehicle,ropeCoords)
+    if closestVeh == 0 then
+        closestVeh = GetClosestVehicle(playerCoords, 10.001, 0, 127)
+    end
+    if closestVeh ~= 0 then
+        TriggerServerEvent('doTheRopFinal',NetworkGetNetworkIdFromEntity(closestVeh),attachedVehicle,ropeCoords)
+    else
+        SetTextComponentFormat("STRING")
+        AddTextComponentString(config.noVeh)
+        DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+    end
 end
 RegisterNetEvent('ropeToClientDataFinal')
 AddEventHandler('ropeToClientDataFinal',function(closestVeh,attachedVehicle,ropeCoords)
